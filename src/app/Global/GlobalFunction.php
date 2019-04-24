@@ -9,6 +9,7 @@ function HotIce_global_function(){
     return 'Welcome HotIce Global Function';
 }
 
+
 /**
  * @param $request
  * @param $oauth_server
@@ -28,7 +29,6 @@ function getPlatform($request,$oauth_server,$appid = 1){
             if ($platform == 'weixin') $platform = 'wechat';
         }
     }
-
     /**
      * 验证平台
      */
