@@ -14,29 +14,36 @@ function RBVerifyIDCard($cid)
     $len = strlen($cid);
     if($len == 18){
         $birthday = RBIsChinaIDCardDate(substr($cid,6,4), substr($cid,10,2), substr($cid,12,2));
-        if ($birthday){
+        if (!$birthday){
+            $msg = '出生日期无效';
             return returnError($msg,$httpCode);
         }else{
             $httpCode = 1;
         }
         $code = RBGetValidateCode($cid);
         if (strtoupper($code) != substr($cid,17,1)){
+            $msg = '校验码无效';
             return returnError($msg,$httpCode);
         }else{
             $httpCode = 1;
         }
     }else if($len == 15){
         $birthday = RBIsChinaIDCardDate('19'.substr($cid,6,2),substr($cid,8,2),substr($cid,10,2));
-        if($birthday){
+        if(!$birthday){
+            $msg = '出生日期无效';
             return returnError($msg,$httpCode);
         }else{
             $httpCode = 1;
         }
         if(!is_numeric($cid)){
+            $msg = '不是有效的15位身份证号';
             return returnError($msg,$httpCode);
         }else{
             $httpCode = 1;
         }
+    }else{
+        $msg = $msg.'：身份证号位数无效';
+        return returnError($msg,$httpCode);
     }
     $result = [
         'provence'=>RBGetProvence($cid),
@@ -46,27 +53,6 @@ function RBVerifyIDCard($cid)
     ];
     return returnSuccess($result,$httpCode);
 }
-
-/**
- * @return array
- *
- * 十七位数字本体码权重
- */
-function RBAWeight(){
-    $aWeight = [7,9,10,5,8,4,2,1,6,3,7,9,10,5,8,4,2];
-    return $aWeight;
-}
-
-/**
- * @return array
- *
- * mod11,对应校验码字符值
- */
-function RBAValidate(){
-    $aValidate = ['1','0','X','9','8','7','6','5','4','3','2'];
-    return $aValidate;
-}
-
 
 /**
  * @param $iY
@@ -95,15 +81,19 @@ function RBIsChinaIDCardDate($iY, $iM, $iD)
  */
 function RBGetValidateCode($id)
 {
-
-    $aValidate = RBAValidate();
-    $id17 = substr($id,0,17);
-    $sum = 0;
-    $len = strlen($id17);
-    for ($i=0; $i<$len; $i++){
-        $sum += $id17[$i] * $aValidate[$i];
+    $id17 =  substr($id,0,17);
+    $body = $id17;
+    # 加权因子
+    $wi = [7,9,10,5,8,4,2,1,6,3,7,9,10,5,8,4,2];
+    # 校验码字符
+    $aValidate = ['1','0','X','9','8','7','6','5','4','3','2'];
+    $sigma = 0;
+    for ($i = 0; $i < 17; $i++) {
+        $b = (int)$body{$i};
+        $w = $wi[$i];
+        $sigma += $b * $w;
     }
-    $mode = $sum % 11;
+    $mode = $sigma % 11;
     return $aValidate[$mode];
 }
 
