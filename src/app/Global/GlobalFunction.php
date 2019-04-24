@@ -8,7 +8,7 @@
  *
  * 获取当前访问平台
  */
-function MBCGetPlatform($request,array $oauth_server,int $appid = 1){
+function RBGetPlatform($request,array $oauth_server,int $appid = 1){
     $platform = null;
     if ($appid) {
         $ConfigOAuthServer = $oauth_server;
@@ -65,7 +65,7 @@ function MBCGetPlatform($request,array $oauth_server,int $appid = 1){
  *
  * 数据库查询数据更具指定字段去除重复数据
  */
-function MBCUniqueArray(array $arr, string $key) {
+function RBUniqueArray(array $arr, string $key) {
     $tmp_arr = array();
     $tmp_array = array();
     foreach ($arr as $k => $v) {
@@ -119,7 +119,7 @@ function returnError($msg, int $code = 0,int$httpCode = 200)
  * @param string $data
  * @return string
  */
-function MBCSafeEncode(string $data)
+function RBSafeEncode(string $data)
 {
     return strtr(base64_encode($data),[
         '=' => null,
@@ -133,7 +133,7 @@ function MBCSafeEncode(string $data)
  * @param string $data
  * @return string
  */
-function MBCSafeDecode(string $data)
+function RBSafeDecode(string $data)
 {
     return base64_decode(strtr($data,[
         '_' => '/',
@@ -147,7 +147,7 @@ function MBCSafeDecode(string $data)
  * @param string $key 密钥
  * @return string
  */
-function MBCEncrypt($data, $key)
+function RBEncrypt($data, $key)
 {
     $iv = openssl_random_pseudo_bytes (16);
     $data = openssl_encrypt(serialize($data),'rc4',$key,1,null);
@@ -160,7 +160,7 @@ function MBCEncrypt($data, $key)
  * @param $key
  * @return mixed|string
  */
-function MBCDecrypt($data,$key)
+function RBDecrypt($data,$key)
 {
     $data = safeDecode($data);
     $iv = substr($data,0,16);
@@ -238,7 +238,7 @@ function getUserAvatar($userHash,$storage_url,$size=null)
  *
  * 电话号验证
  */
-function MBCPhoneNumVerify($tel,$onlyMob=null)
+function RBPhoneNumVerify($tel,$onlyMob=null)
 {
     $isMob = "/^1[3-5,4,7,8]{1}[0-9]{9}$/";
     $isTel="/^([0-9]{3,4}-)?[0-9]{7,8}$/";
@@ -310,7 +310,7 @@ function MBCPhoneNumVerify($tel,$onlyMob=null)
  *
  * 多维数组自定义排序
  */
-function MBCArrSort($arrays,$sort_key,$sort_order=SORT_ASC,$sort_type=SORT_NUMERIC ){
+function RBArrSort($arrays,$sort_key,$sort_order=SORT_ASC,$sort_type=SORT_NUMERIC ){
     if(is_array($arrays)){
         foreach ($arrays as $array){
             if(is_array($array)){
@@ -340,7 +340,7 @@ function GenerateOrderNumber(){
  *
  * 取得汉字拼音首字母
  */
-function MBCPinyinToFirst($s) {
+function RBPinyinToFirst($s) {
     $ascii = ord($s[0]);
     if($ascii > 0xE0) {
         $s = iconv('UTF-8', 'GB2312//IGNORE', $s[0].$s[1].$s[2]);
@@ -391,7 +391,7 @@ function MBCPinyinToFirst($s) {
  *
  * 获取整条字符串汉字拼音首字母
  */
-function MBCFirstSpelling($zh){
+function RBFirstSpelling($zh){
     $ret = "";
     $s1 = iconv("UTF-8","gb2312", $zh);
     $s2 = iconv("gb2312","UTF-8", $s1);
@@ -401,7 +401,7 @@ function MBCFirstSpelling($zh){
         $p = ord($s1);
         if($p > 160){
             $s2 = substr($zh,$i++,2);
-            $ret .= MBCPinyinToFirst($s2);
+            $ret .= RBPinyinToFirst($s2);
         }else{
             $ret .= $s1;
         }
@@ -418,7 +418,7 @@ function MBCFirstSpelling($zh){
  * @param int $decimal
  * @return float
  */
-function MBCGetDistance($longitude1, $latitude1, $longitude2, $latitude2, $unit=2, $decimal=2){
+function RBGetDistance($longitude1, $latitude1, $longitude2, $latitude2, $unit=2, $decimal=2){
 
     $EARTH_RADIUS = 6370.996; // 地球半径系数
     //$PI = 3.1415926;
