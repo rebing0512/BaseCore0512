@@ -67,3 +67,59 @@ function getPlatform($request,$oauth_server,$appid = 1){
 
     return $platform;
 }
+
+/**
+ * @param $arr
+ * @param $key
+ * @return mixed
+ *
+ * 数据库查询数据更具指定字段去除重复数据
+ */
+function unique_array($arr, $key) {
+    $tmp_arr = array();
+    $tmp_array = array();
+    foreach ($arr as $k => $v) {
+        # 搜索$v[$key]是否在$tmp_arr数组中存在，若存在返回true
+        if (in_array($v[$key], $tmp_arr)) {
+            unset($arr[$k]);
+        } else {
+            $tmp_arr[] = $v[$key];
+            $tmp_array[] = $v;
+        }
+    }
+    # sort 函数对数组进行排序
+    sort($tmp_array);
+    return $tmp_array;
+}
+
+/**
+ * @param $msg
+ * @param int $code
+ * @param int $httpCode
+ * @return mixed
+ *
+ * Return Success
+ */
+function returnSuccess($msg, $code = 1, $httpCode = 200)
+{
+    return response()->json([
+        'code' => $code,
+        'result' => $msg
+    ], $httpCode, [], 271);
+}
+
+/**
+ * @param $msg
+ * @param int $code
+ * @param int $httpCode
+ * @return mixed
+ *
+ * Return Error
+ */
+function returnError($msg, $code = 0, $httpCode = 200)
+{
+    return returnSuccess([
+        'msg' => $msg,
+    ],$code,$httpCode);
+
+}
